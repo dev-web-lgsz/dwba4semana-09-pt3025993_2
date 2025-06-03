@@ -1,18 +1,39 @@
 <script>
-  let slideIndex = 0;
-  const slides = document.getElementsByClassName("slide");
+  const track = document.querySelector('.carousel-track');
+  const slides = document.querySelectorAll('.carousel-slide');
+  const prevBtn = document.querySelector('.prev');
+  const nextBtn = document.querySelector('.next');
+  const dots = document.querySelectorAll('.dot');
 
-  function showSlides() {
-    for (let i = 0; i < slides.length; i++) {
-      slides[i].style.display = "none";
-    }
+  let currentIndex = 0;
 
-    slideIndex++;
-    if (slideIndex > slides.length) { slideIndex = 1; }
+  function updateCarousel() {
+    const slideWidth = slides[0].clientWidth;
+    track.style.transform = `translateX(-${slideWidth * currentIndex}px)`;
 
-    slides[slideIndex - 1].style.display = "block";
-    setTimeout(showSlides, 3000); // Troca a cada 3 segundos
+    dots.forEach(dot => dot.classList.remove('active'));
+    dots[currentIndex].classList.add('active');
   }
 
-  showSlides();
+  nextBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % slides.length;
+    updateCarousel();
+  });
+
+  prevBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+    updateCarousel();
+  });
+
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+      currentIndex = index;
+      updateCarousel();
+    });
+  });
+
+  window.addEventListener('resize', updateCarousel);
+
+  // Inicialização
+  updateCarousel();
 </script>
